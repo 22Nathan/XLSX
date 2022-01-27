@@ -34,7 +34,11 @@ class Database extends Config
     
     public $default = [
         'DSN'      => '',
+<<<<<<< HEAD
         'hostname' => 'localhost:8585',
+=======
+        'hostname' => 'localhost:3306',
+>>>>>>> b2e8714 (27/01/22)
         'username' => 'qazzdine',
         'password' => 'qazqaz2222',
         'database' => 'csv_file_db',

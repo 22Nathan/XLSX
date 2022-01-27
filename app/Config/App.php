@@ -24,7 +24,11 @@ class App extends BaseConfig
      * @var string
      */
     //public $baseURL = 'http://localhost:8080/';
+<<<<<<< HEAD
     public $baseURL = 'http://localhost:8585/XLS/';
+=======
+    public $baseURL = 'http://localhost:8585/XLSX/';
+>>>>>>> b2e8714 (27/01/22)
 
     /**
      * --------------------------------------------------------------------------
