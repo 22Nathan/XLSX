@@ -220,6 +220,16 @@
 			background-color: rgba(221, 72, 20, .8);
 			color: black;
 		}
+		div form 
+		{
+			display: inline-block;
+			width: 25%;
+			padding-bottom: 5px;
+		}
+		form button
+		{
+			width: 100%;
+		}
 	</style>
 
 </head>
@@ -266,9 +276,14 @@
 			echo
 			'
 			<br>
-			<form method="post" action="'. site_url('home/update') .'">
-					<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04" style="width:40%">Appliquer des modifications</button>
-			</form>
+			<div>
+				<form method="post" action="'. site_url('home/update') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04" style="width:100%">Appliquer des modifications</button>
+				</form>
+				<form method="post" action="'. site_url('home/download') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04" style="width:100%">Télécharger en PDF</button>
+				</form>
+			</div>
 			<br>
 			'
 			;

@@ -39,6 +39,24 @@ $routes->match(['get','post'], 'home/convert', 'Home::convert' );
 $routes->match(['get','post'], 'update', 'Home::update' );
 $routes->match(['get','post'], 'home/update', 'Home::update' );
 
+$routes->match(['get','post'], 'update-delCol', 'Home::delCol' );
+$routes->match(['get','post'], 'home/update-delCol', 'Home::delCol' );
+
+$routes->match(['get','post'], 'update-addCol', 'Home::addCol' );
+$routes->match(['get','post'], 'home/update-addCol', 'Home::addCol' );
+
+$routes->match(['get','post'], 'update-delLine', 'Home::delLine' );
+$routes->match(['get','post'], 'home/update-delLine', 'Home::delLine' );
+
+$routes->match(['get','post'], 'update-addLine', 'Home::addLine' );
+$routes->match(['get','post'], 'home/update-addLine', 'Home::addLine' );
+
+$routes->match(['get','post'], 'update-save', 'Home::save' );
+$routes->match(['get','post'], 'home/update-save', 'Home::save' );
+
+$routes->match(['get','post'], 'update-cancel', 'Home::cancel' );
+$routes->match(['get','post'], 'home/update-cancel', 'Home::cancel' );
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
