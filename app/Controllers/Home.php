@@ -46,10 +46,6 @@ class Home extends Controller
         //
         $db = \Config\Database::connect();
 
-<<<<<<< HEAD
-=======
-        //supprimer les potentiels fichiers scv
->>>>>>> b2e8714 (27/01/22)
         $rmfiles = glob( WRITEPATH.'../public/csvfile'.'/*' );
         foreach($rmfiles as $f) {
             if(is_file($f)) 
@@ -58,19 +54,10 @@ class Home extends Controller
             }    
         }
 
-<<<<<<< HEAD
-
-=======
-        //check l'extension pour du csv
->>>>>>> b2e8714 (27/01/22)
         $input = $this->validate([
             'file' => 'uploaded[file]|max_size[file,2048]|ext_in[file,csv],'
         ]);
 
-<<<<<<< HEAD
-=======
-        //Si il y a un fichier et un fichier non vide
->>>>>>> b2e8714 (27/01/22)
         if (!$input) 
         {
             //$data['validation'] = $this->validator;
@@ -80,31 +67,11 @@ class Home extends Controller
                 'messageErreur' => $messageErreur,
             ];
 
-<<<<<<< HEAD
-=======
             //retorune la vue d'acceuil 
->>>>>>> b2e8714 (27/01/22)
             return view('welcome_message', $data);
         }
         else
         {
-<<<<<<< HEAD
-            $file = $this->request->getFile('file');
-
-            $namefile = strval($file->getName()) ;
-
-            if( $file ) 
-            {
-                if( $file->isValid() && !$file->hasMoved() ) 
-                {
-                    
-                    $newName = $file->getRandomName();
-
-                    //déplacer le fichier 
-                    $file->move(WRITEPATH.'../public/csvfile', $newName);
-
-                    //file location
-=======
             //récupération du fichier
             $file = $this->request->getFile('file');
 
@@ -125,23 +92,12 @@ class Home extends Controller
                     $file->move(WRITEPATH.'../public/csvfile', $newName);
 
                     //get file location
->>>>>>> b2e8714 (27/01/22)
                     $filelocation = WRITEPATH."../public/csvfile/".$newName;
 
                     //get instance of file
                     $file = new \CodeIgniter\Files\File( $filelocation );
 
                     //ouvrir le fichier
-<<<<<<< HEAD
-                    //$file->openFile('r');
-                    $fileopen = fopen( $file, "r" );
-
-                    //première ligne du fichier
-                    $line = fgets( $fileopen );
-
-                    //tableau avec les champs de la 1ère ligne
-                    $tabfields = explode( ";", $line );
-=======
                     $fileopen = fopen( $file, "r" );
 
                     //get première ligne du fichier
@@ -159,19 +115,15 @@ class Home extends Controller
 
                     //tableau avec les champs de la 1ère ligne
                     $tabfields = explode( $separateur , $line );
->>>>>>> b2e8714 (27/01/22)
 
                     //nb de fields
                     $numberOfFields = count( $tabfields );
 
                     //créer les colonnes
 
-<<<<<<< HEAD
-=======
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> b2e8714 (27/01/22)
                     //création de l'id
                     /*
                     $fields = 
@@ -182,24 +134,6 @@ class Home extends Controller
                     //ajout le field à la future table
                     $forge->addField( $fields );
                     */
-<<<<<<< HEAD
-
-                    for( $i = 0 ; $i < $numberOfFields ; $i++ )
-                    {
-                        if( strpos( $tabfields[$i] , "\n" ) !== false )
-                        {
-                            $tabfields[$i] = str_replace( "\n" , "" , $tabfields[$i] );
-                        }
-                        if( strpos( $tabfields[$i] , "\r" ) !== false )
-                        {
-                            $tabfields[$i] = str_replace( "\r" , "" , $tabfields[$i] );
-                        }
-                        $fields =
-                        [
-                            $tabfields[$i] => [ 'type' => 'VARCHAR', 'constraint' => 255 ]
-                        ];
-
-=======
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,7 +161,6 @@ class Home extends Controller
                         ];
 
                         //insérer dans la table
->>>>>>> b2e8714 (27/01/22)
                         $forge->addField( $fields );
                     }
 
@@ -256,10 +189,7 @@ class Home extends Controller
                             $i = 0 ;
                             $arr = [];
 
-<<<<<<< HEAD
-=======
                             //supprimer les caractères d'échappement
->>>>>>> b2e8714 (27/01/22)
                             while( ( $buffer = fgets( $fileopen ) ) !== false )
                             {
                                 if( strpos( $buffer , "\n" ) !== false )
@@ -270,13 +200,9 @@ class Home extends Controller
                                 {
                                     $buffer = str_replace( "\r" , "" , $buffer );
                                 }
-<<<<<<< HEAD
-                                $arr[$i] = explode( ";" , $buffer );
-=======
 
                                 //séparer les lignes en array en fonction du séparateur
                                 $arr[$i] = explode( $separateur , $buffer );
->>>>>>> b2e8714 (27/01/22)
 
                                 for( $z = 0 ; $z < $numberOfFields ; $z++ )
                                 {
@@ -284,11 +210,9 @@ class Home extends Controller
                                 }
 
                                 $arr[$i] = array_slice( $arr[$i], -$numberOfFields );
-<<<<<<< HEAD
-=======
                                 //var_dump( $arr[$i] );
->>>>>>> b2e8714 (27/01/22)
-                                
+
+
                                 $builder->insert( $arr[$i] );
 
                                 $i++ ;
@@ -319,6 +243,19 @@ class Home extends Controller
                 }
             }
         }
+
+        //---
+        //Initialiser la session et y affecter la table compléte ( colonnes + valeurs )
+        $coloneEtlignes = 
+        [
+            'colonnes' => $tabfields,
+            'lignes'   => $arr,
+        ];
+
+
+        $session = \Config\Services::session($config);
+        $session->set($coloneEtlignes);
+        //---
         
         $data = [
             'reponseT' => $reponseTrue,
@@ -336,26 +273,268 @@ class Home extends Controller
     public function update()
     {
 
-        $db = \Config\Database::connect();
+        $table = new \CodeIgniter\View\Table();
+        $session = session();
 
-        //tableau de toutes les tables
-        $tables = $db->listTables();
+        if( $session )
+        {
+            $colonnes = $session->get('colonnes');
+            $lignes   = $session->get('lignes');
+        }
+        else
+        {
+            $colonnes = null;
+            $lignes   = null;
+        }
 
-        // Produces: SELECT * FROM mytable
-        $builder = $db->table( $tables[0] );
-        $sql = $builder->getCompiledSelect();
-        $result = $db->query( $sql );
-        $result = $result->getResult();
+        $nbColonnes = count( $colonnes );
+        $session->set('nbColonnes' , $nbColonnes);
 
-        //echo $result ;
-        //var_dump( $result );
+        //table de base
+        $tableDeBase = [
+            'TDBcolonnes'   => $colonnes,
+            'TDBlignes'     => $lignes,
+            'TDBnbColonnes' => $nbColonnes,  
+        ];
+        $session->set( $tableDeBase );
 
         $data = [
-            'result' => "",
+            'nbCol'    => $nbColonnes,
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'lignes'   => $lignes,
         ];
 
         echo view( 'update', $data );
     }
+
+
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function delCol()
+    {
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('colonnes');
+        $lignes     = $session->get('lignes');
+        $nbColonnes = $session->get('nbColonnes');
+
+        $delCol = true;
+        $delLignes = null;
+
+        if( $_POST )
+        {
+            //supprimer les colonnes
+            $post = array_keys( $_POST );
+
+            for( $i = 0 ; $i < count($post) ; $i++ )
+            {
+                $position = array_search( $post[$i] , $colonnes );
+                //array_splice( $colonnes , $position , ($position+1) );
+                array_splice( $colonnes , $position , 1 );
+                for( $j = 0 ; $j < count( $lignes ) ; $j++ )
+                {
+                    //array_splice( $lignes[$j] , $position , ($position+1) );
+                    array_splice( $lignes[$j] , $position , 1 );
+                    
+                }
+            }
+
+            $delCol = null;
+        }
+
+        $session->set( 'colonnes'   , $colonnes );
+        $session->set( 'lignes'     , $lignes  );
+        $session->set( 'nbColonnes' , $nbColonnes );
+
+        $data = [
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'lignes'   => $lignes,
+            'delCol'   => $delCol,
+            'nbColonnes' => $nbColonnes,
+            'delLignes'  => $delLignes,
+        ];
+
+        echo view( 'update', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function addCol()
+    {
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('colonnes');
+        $lignes     = $session->get('lignes');
+        $nbColonnes = $session->get('nbColonnes');
+
+        $txtColonnes = "Colonne_n°" . ($nbColonnes +1) ;
+
+        array_push( $colonnes, $txtColonnes );
+
+        for( $i = 0 ; $i < count($lignes) ; $i++ )
+        {
+            array_push( $lignes[$i] , "..." );
+        }
+
+        $session->set( 'colonnes' , $colonnes );
+        $session->set( 'lignes'  , $lignes  );
+        $session->set( 'nbColonnes' , $nbColonnes+1 );
+
+        $data = [
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'lignes'   => $lignes,
+        ];
+
+        return view( 'update', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function delLine()
+    {
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('colonnes');
+        $lignes     = $session->get('lignes');
+        $nbColonnes = $session->get('nbColonnes');
+
+        $delLignes = true;
+        $delCol = null;
+
+        if( $_POST )
+        {
+            //supprimer les lignes
+            $post = array_keys( $_POST );
+
+            for( $i = 0 ; $i < count($post) ; $i++ )
+            {
+                array_splice( $lignes[$post[$i]] , 0 );             
+            }
+
+            $delLignes = null;
+        }
+
+        $session->set( 'colonnes'   , $colonnes );
+        $session->set( 'lignes'     , $lignes  );
+        $session->set( 'nbColonnes' , $nbColonnes );
+
+        $data = [
+            'table'     => $table,
+            'colonnes'  => $colonnes,
+            'lignes'    => $lignes,
+            'delLignes' => $delLignes,
+        ];
+
+        echo view( 'update', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function addLine()
+    {
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('colonnes');
+        $lignes     = $session->get('lignes');
+        $nbColonnes = $session->get('nbColonnes');
+
+        $unArray = [];
+
+        for( $i = 0 ; $i < count($colonnes) ; $i++ )
+        {
+            //array_push( $lignes[$i] , "..." );
+            $unArray[$colonnes[$i]] = "...";
+        }        
+        
+        array_push( $lignes , $unArray );
+
+        $session->set( 'colonnes' , $colonnes );
+        $session->set( 'lignes'  , $lignes  );
+        
+        $data = [
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'lignes'   => $lignes,
+        ];
+
+        echo view( 'update', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function save()
+    {
+        $reponseTrue = "Changements chargés avec succès";
+        $reponseFalse = "";
+
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('colonnes');
+        $lignes     = $session->get('lignes');
+
+        $data = [
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'result'   => $lignes,
+            'reponseT' => $reponseTrue,
+            'reponseF' => $reponseFalse,
+        ];
+
+        echo view( 'convert', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public function cancel()
+    {
+        $reponseTrue = "Changements annulés";
+        $reponseFalse = "";
+
+        $session = session();
+        $table = new \CodeIgniter\View\Table();
+
+        $colonnes   = $session->get('TDBcolonnes');
+        $lignes     = $session->get('TDBlignes');
+
+        $session->set( 'colonnes' , $colonnes );
+        $session->set( 'lignes' , $lignes );
+
+        $data = [
+            'table'    => $table,
+            'colonnes' => $colonnes,
+            'result'   => $lignes,
+            'reponseT' => $reponseTrue,
+            'reponseF' => $reponseFalse,
+        ];
+
+        echo view( 'convert', $data );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

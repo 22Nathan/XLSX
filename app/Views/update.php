@@ -209,6 +209,27 @@
 		tr:nth-child(even) {
 			background-color: #dddddd;
 		}
+
+		thead {
+			background-color: #dddddd;
+		}
+
+		thead > tr > th {
+			font-size: 17px;
+			font-weight: bold;
+			background-color: rgba(221, 72, 20, .8);
+			color: black;
+		}
+		div form 
+		{
+			display: inline-block;
+			width: 25%;
+			padding-bottom: 5px;
+		}
+		form button
+		{
+			width: 100%;
+		}
 	</style>
 
 </head>
@@ -221,7 +242,7 @@
 
 	<div class="menu">
 		<ul>
-			<li class="logo"> <a href="#" target="_blank"> <img height="44" title="C" alt="" src=""> </a> </li>
+			<li class="logo"> <a href="#" target="_blank"> <!--<img height="44" title="C" alt="" src="">--> </a> </li>
 			<li class="menu-toggle"> <button onclick="toggleMenu();">&#9776;</button> </li>
 			<li class="menu-item hidden"><a href="..">Home</a></li>
 			<li class="menu-item hidden"><a href="#" target="_blank"></a></li>
@@ -242,7 +263,113 @@
 <!-- CONTENT -->
 <section>
 
-        <?= var_dump($result) ?>
+	<?php 
+
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		if( isset( $table ) )
+		{
+			echo
+			'
+			<h2 style="font-size: 1.875rem; padding-top: 0;">Tous les champs sont éditables, cliquer dessus pour les modifier.</h2>
+			<br>
+			<div>
+				<form method="post" action="'. site_url('home/update-addCol') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Ajouter une colonne</button>
+				</form>
+				
+				<form method="post" action="'. site_url('home/update-delCol') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Supprimer une colonne</button>
+				</form>
+
+				<form method="post" action="'. site_url('home/update-cancel') .'" style="margin-left:10%;">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Annuler les modifications</button>
+				</form>
+			</div>
+			<div>
+				<form method="post" action="'. site_url('home/update-addLine') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Ajouter une ligne</button>
+				</form>
+				
+				<form method="post" action="'. site_url('home/update-delLine') .'">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Supprimer une ligne</button>
+				</form>
+
+				<form method="post" action="'. site_url('home/update-save') .'" style="margin-left:10%;">
+						<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04">Enregistrer</button>
+				</form>
+			</div>
+			<br>
+			'
+			;
+		}
+
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		if( isset( $delCol ) )
+		{
+			echo '
+					<h1 style="margin-bottom:0;">Cocher les colonnes à supprimer.</h1>
+					<h2 style="padding-top:0px;">Plusieurs choix possibles</h2> ';
+
+			echo '<form method="post" action"'. site_url('home/update-delCol') .'" enctype="multipart/form-data">';
+			for( $i = 0 ; $i < $nbColonnes ; $i++ )
+			{
+				echo 
+				'<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="'. $colonnes[$i] .'">
+						<label class="form-check-label" for="flexSwitchCheckDefault">'. $colonnes[$i] .'</label>
+				</div>';
+			}
+			echo '<br>';
+			echo '<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04" style="width:30%;">Confirmer</button></form>	';
+			echo '<br>';
+
+		}
+
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		if( isset( $delLignes ) )
+		{
+			echo '
+					<h1 style="margin-bottom:0;">Cocher les lignes à supprimer.</h1>
+					<h2 style="padding-top:0px;">Plusieurs choix possibles</h2> ';
+
+			echo '<form method="post" action"'. site_url('home/update-delLine') .'" enctype="multipart/form-data">';
+			for( $i = 0 ; $i < count( $lignes ) ; $i++ )
+			{
+				echo 
+				'<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="'. ($i) .'">
+						<label class="form-check-label" for="flexSwitchCheckDefault">'. ($i+1) .'</label>
+				</div>';
+			}
+			echo '<br>';
+			echo '<button class="btn btn-secondary" type="submit" id="inputGroupFileAddon04" style="width:30%;">Confirmer</button></form>	';
+			echo '<br>';
+
+		}
+
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	?>
+
+	<code>
+		<?php 
+			if( isset( $table ) )
+			{
+				$table->setHeading($colonnes);
+				echo $table->generate($lignes);
+			}
+		?>
+	</code>
 
 </section>
 
@@ -271,6 +398,17 @@
 			menuItem.classList.toggle("hidden");
 		}
 	}
+
+	function setTableEditable()
+	{
+		let x = document.getElementsByTagName('tr');
+		for ( let i = 0 ; i < x.length ; i++ ) 
+		{
+			x[i].contentEditable = "true";
+		}
+	}
+
+	setTableEditable();
 </script>
 
 <!-- -->
