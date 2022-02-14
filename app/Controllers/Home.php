@@ -409,14 +409,38 @@ class Home extends Controller
         $delLignes = true;
         $delCol = null;
 
+        $indiceVu = [];
+
         if( $_POST )
         {
             //supprimer les lignes
             $post = array_keys( $_POST );
 
+            rsort( $post , SORT_NUMERIC );
+
             for( $i = 0 ; $i < count($post) ; $i++ )
             {
-                array_splice( $lignes[$post[$i]] , 0 );             
+                /*
+                if( max($post) != null )
+                {
+                    $indice = max($post);
+
+                    array_push( $indiceVu , $indice );
+                }
+                else
+                {
+                    for( $j = 0 ; $j < count($post) ; $j++ )
+                    {
+                        if( !in_array( $post[$j] , $indiceVu ) )
+                        {
+                            $indice = $post[$j];
+                        }
+                    }
+                }
+                */
+                $indice = $post[$i];
+                    
+                array_splice( $lignes , $indice , 1 );        
             }
 
             $delLignes = null;
@@ -431,6 +455,7 @@ class Home extends Controller
             'colonnes'  => $colonnes,
             'lignes'    => $lignes,
             'delLignes' => $delLignes,
+            'post'      => $post,
         ];
 
         echo view( 'update', $data );
